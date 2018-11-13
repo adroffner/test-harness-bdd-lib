@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 from setuptools import setup, find_packages
-from testharness.selenium import __version__
+from testharness.bdd import __version__
 
 
 def readme():
@@ -9,17 +9,17 @@ def readme():
         return f.read()
 
 
-setup(name='testharness_selenium',
+setup(name='testharness_bdd',
       version=__version__,
       license='PSF',
-      description='Selenium Grid Test Harness for unittest',
+      description='Behavior Driven Development (BDD) Test Harness for unittest',
       long_description=readme(),
       author='Andrew Droffner',
       author_email='ad718x@us.att.com',
-      url='https://codecloud.web.att.com/projects/ST_TITAN/repos/test-harness-selenium-lib/browse',
+      url='https://codecloud.web.att.com/projects/ST_TITAN/repos/test-harness-bdd-lib/browse',
       packages=find_packages(exclude=['docs', 'tests']),
       install_requires=[
-          'selenium>=3.141.0',
+          'morelia>=0.6.5',
       ],
       test_suite='nose.collector',
       # tests_require=['nose>=1.3.7', 'coverage>=4.4.1'],
