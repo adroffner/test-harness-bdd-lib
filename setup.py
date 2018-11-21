@@ -21,6 +21,7 @@ setup(name='testharness_bdd',
       install_requires=[
           'morelia>=0.6.5',
       ],
+      scripts=['bin/compile_bdd_feature.py'],
       test_suite='nose.collector',
       # tests_require=['nose>=1.3.7', 'coverage>=4.4.1'],
       # NOTE: ./setup.py nosetests <= needs "setup_requires"
