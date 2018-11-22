@@ -38,7 +38,7 @@ class HttpPostRestApiBDDStepsMixin(JSONDataLoaderMixin):
 
     def step_User_POSTs_endpoint_relative_url_with_post_payload(self, relative_url, post_payload):
         r'User POSTs endpoint (.+) with (.+)'
-        post_payload = self.load_data(post_payload)
+        post_payload = self.load_json(post_payload)
         self.response = self.client.post(relative_url, post_payload)
 
     def step_the_response_JSON_message_contains_message_text(self, message_text):

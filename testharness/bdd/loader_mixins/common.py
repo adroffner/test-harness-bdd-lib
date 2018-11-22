@@ -30,19 +30,31 @@ class BDDFeatureDataLoaderMixin:
 
         return self._data_files_dir
 
-    def load_data(self, data_filename):
-        """ Load Data.
+    def get_absolute_path(self, data_filename):
+        """ Get Absolute Data File Path.
 
-        Load data from the file in the data_files_dir.
+        Get the absolute data file path in the data_files_dir.
 
-        Subclasses may override this method to change
-        the return value. By default it is a str object.
+        :param str data_filename: short filename without directory
+        :returns: absolute path to file
+        """
+
+        file_path = os.path.join(self.data_files_dir, data_filename)
+        return file_path
+
+    def load_text(self, data_filename):
+        """ Load Data as Text.
+
+        Load text data from the file in the data_files_dir.
+
+        Subclasses may follow this method to return another
+        python object type.
 
         :param str data_filename: short filename without directory
         :returns: file data as some python object
         """
 
-        file_path = os.path.join(self.data_files_dir, data_filename)
+        file_path = self.get_absolute_path(data_filename)
 
         data = ''
         with open(file_path, 'rb') as f:
@@ -50,7 +62,7 @@ class BDDFeatureDataLoaderMixin:
         return data
 
 
-class JSONDataLoaderMixin:
+class JSONDataLoaderMixin(BDDFeatureDataLoaderMixin):
     """ JSON Data Loader Mixin.
 
     Find and load a "Scenario Outline" parameter from a data file.
@@ -58,20 +70,32 @@ class JSONDataLoaderMixin:
     """
 
     def load_data(self, data_filename):
-        file_path = os.path.join(self.data_files_dir, data_filename)
+        """ Load Data as JSON.
+
+        Load JSON data from the file in the data_files_dir.
+
+        :param str data_filename: short filename without directory
+        :returns: file data as JSON dict
+        """
+
+        file_path = self.get_absolute_path(data_filename)
 
         data = {}
         with open(file_path, 'rb') as f:
-            data = json.load(f)
+            try:
+                data = json.load(f)
+            except json.JSONDecodeError:
+                pass
         return data
 
 
 if __name__ == '__main__':
 
-    class ExampleLoader(BDDFeatureDataLoaderMixin):
+    # class ExampleLoader(BDDFeatureDataLoaderMixin):
+    class ExampleLoader(JSONDataLoaderMixin):
         FEATURE_FILE = 'project/features/TC-T2.feature'
 
     loader = ExampleLoader()
     print(loader.data_files_dir)
 
-    loader.load_data('hello.txt')
+    loader.load_text('hello.txt')
