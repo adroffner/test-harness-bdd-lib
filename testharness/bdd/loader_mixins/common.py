@@ -5,6 +5,14 @@ import json
 import os.path
 
 
+class DataFileError(ValueError):
+    """ BDD Data File Error.
+
+    The data file cannot be read or is corrupt.
+    """
+    pass
+
+
 class BDDFeatureDataLoaderMixin:
     """ BDD Feature Data Loader Mixin.
 
@@ -30,13 +38,13 @@ class BDDFeatureDataLoaderMixin:
 
         return self._data_files_dir
 
-    def get_absolute_path(self, data_filename):
+    def get_local_path(self, data_filename):
         """ Get Absolute Data File Path.
 
-        Get the absolute data file path in the data_files_dir.
+        Get the local data file path in the data_files_dir.
 
         :param str data_filename: short filename without directory
-        :returns: absolute path to file
+        :returns: local path to file
         """
 
         file_path = os.path.join(self.data_files_dir, data_filename)
@@ -54,7 +62,7 @@ class BDDFeatureDataLoaderMixin:
         :returns: file data as some python object
         """
 
-        file_path = self.get_absolute_path(data_filename)
+        file_path = self.get_local_path(data_filename)
 
         data = ''
         with open(file_path, 'rb') as f:
@@ -69,7 +77,7 @@ class JSONDataLoaderMixin(BDDFeatureDataLoaderMixin):
     The data filename is the "Examples:" data table value.
     """
 
-    def load_data(self, data_filename):
+    def load_json(self, data_filename):
         """ Load Data as JSON.
 
         Load JSON data from the file in the data_files_dir.
@@ -78,18 +86,18 @@ class JSONDataLoaderMixin(BDDFeatureDataLoaderMixin):
         :returns: file data as JSON dict
         """
 
-        file_path = self.get_absolute_path(data_filename)
+        file_path = self.get_local_path(data_filename)
 
         data = {}
         with open(file_path, 'rb') as f:
             try:
                 data = json.load(f)
             except json.JSONDecodeError:
-                pass
+                raise DataFileError(file_path)
         return data
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
 
     # class ExampleLoader(BDDFeatureDataLoaderMixin):
     class ExampleLoader(JSONDataLoaderMixin):
