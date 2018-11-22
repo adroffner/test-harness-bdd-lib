@@ -13,11 +13,11 @@ class DataFileError(ValueError):
     pass
 
 
-class BDDFeatureDataLoaderMixin:
-    """ BDD Feature Data Loader Mixin.
+class BaseDataLoaderMixin:
+    """ Base Data Loader Mixin.
 
     Find and load a "Scenario Outline" parameter from a data file.
-    The data filename is the "Examples:" data table value.
+    The data filename is the "Examples:" data table cell.
     """
 
     @property
@@ -28,7 +28,7 @@ class BDDFeatureDataLoaderMixin:
         The directory must already exist and be popluated.
 
             FEATURE_FILE:   'project/features/TC-T2.feature'
-            data_files_dir: 'project/features/data/TC-T2/'
+            data_files_dir: 'project/features/data/TC-T2'
         """
 
         if not hasattr(self, '_data_files_dir'):
@@ -38,43 +38,69 @@ class BDDFeatureDataLoaderMixin:
 
         return self._data_files_dir
 
-    def get_local_path(self, data_filename):
-        """ Get Absolute Data File Path.
+    def get_path(self, data_filename):
+        """ Get Data File Path.
 
-        Get the local data file path in the data_files_dir.
+        Get the data file path in the data_files_dir.
 
         :param str data_filename: short filename without directory
-        :returns: local path to file
+        :returns: path to file
         """
 
         file_path = os.path.join(self.data_files_dir, data_filename)
         return file_path
+
+    def load_data(self, data_filename):
+        """ Load Raw Data.
+
+        Load data from the file in the data_files_dir.
+
+        Subclasses should make similar methods to return other
+        python object types.
+
+        :param str data_filename: short filename without directory
+        :returns: file data as bytes
+        """
+
+        file_path = self.get_path(data_filename)
+
+        data = b''
+        with open(file_path, 'rb') as f:
+            data = f.read()
+        return data
+
+# ================================================================
+
+
+class TextDataLoaderMixin(BaseDataLoaderMixin):
+    """ Text Data Loader Mixin.
+
+    Find and load a "Scenario Outline" parameter from a data file.
+    The data filename is the "Examples:" data table cell.
+    """
 
     def load_text(self, data_filename):
         """ Load Data as Text.
 
         Load text data from the file in the data_files_dir.
 
-        Subclasses may follow this method to return another
-        python object type.
-
         :param str data_filename: short filename without directory
-        :returns: file data as some python object
+        :returns: file data as str
         """
 
-        file_path = self.get_local_path(data_filename)
+        file_path = self.get_path(data_filename)
 
         data = ''
-        with open(file_path, 'rb') as f:
+        with open(file_path, 'r') as f:
             data = f.read()
         return data
 
 
-class JSONDataLoaderMixin(BDDFeatureDataLoaderMixin):
+class JSONDataLoaderMixin(BaseDataLoaderMixin):
     """ JSON Data Loader Mixin.
 
     Find and load a "Scenario Outline" parameter from a data file.
-    The data filename is the "Examples:" data table value.
+    The data filename is the "Examples:" data table cell.
     """
 
     def load_json(self, data_filename):
@@ -86,20 +112,19 @@ class JSONDataLoaderMixin(BDDFeatureDataLoaderMixin):
         :returns: file data as JSON dict
         """
 
-        file_path = self.get_local_path(data_filename)
+        file_path = self.get_path(data_filename)
 
         data = {}
         with open(file_path, 'rb') as f:
             try:
                 data = json.load(f)
-            except json.JSONDecodeError:
-                raise DataFileError(file_path)
+            except json.JSONDecodeError as e:
+                raise DataFileError(file_path) from e
         return data
 
 
 if __name__ == '__main__':  # pragma: no cover
 
-    # class ExampleLoader(BDDFeatureDataLoaderMixin):
     class ExampleLoader(JSONDataLoaderMixin):
         FEATURE_FILE = 'project/features/TC-T2.feature'
 
