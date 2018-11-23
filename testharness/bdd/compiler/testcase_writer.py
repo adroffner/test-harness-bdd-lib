@@ -27,7 +27,12 @@ def get_py_name(raw_str):
     :returns: a python3 identifier
     """
 
-    return PY_NAME_OK_RE.sub('_', raw_str)
+    pyname = PY_NAME_OK_RE.sub('_', raw_str)
+    # Cannot start with a digit.
+    if re.match(r'^\d', pyname):
+        pyname = 'a' + pyname
+
+    return pyname
 
 
 def get_bdd_module_name(testing_prefix, feature_filename):
@@ -112,10 +117,17 @@ def compile(feature_file, testing_prefix='test'):
     :returns: True when compilation was successful
     """
 
+    # Cannot re-compile FEATURE_FILE; BDD morelia will just run the existing file.
+    new_testcase_filename = get_bdd_module_name(testing_prefix, feature_file)
+    if os.path.isfile(new_testcase_filename):
+        print('Cannot compile new feature file, "{}" already exists.\n'.format(
+            new_testcase_filename), file=sys.stderr)
+        return False
+
     BDDTestCaseWriter.FEATURE_FILE = feature_file
     BDDTestCaseWriter.TESTING_PREFIX = testing_prefix
 
-    print('Compiling Feature: ', BDDTestCaseWriter.FEATURE_FILE, '...\n\n',
+    print('Compiling Feature: {}...\n\n'.format(BDDTestCaseWriter.FEATURE_FILE),
           file=sys.stderr)
 
     testSuite = unittest.TestSuite()
