@@ -66,13 +66,19 @@ class TM4JTestRunReporter(object):
         "scriptResults" := XUnit testcases
     """
 
-    def __init__(self, xunit_filename):
+    def __init__(self, xunit_filename, analyst_id, comment='', environment=''):
         """ Init TM4JTestRunReporter.
 
         :param str xunit_filename: an XUnit XML report file
+        :param str analyst_id: Test Analyst user ID in JIRA
+        :param str comment: optional comment for test suite(s)
+        :param str environment: JIRA Test Environment name (must match exactly)
         """
 
         self.xunit_filename = xunit_filename
+        self.user_key = analyst_id
+        self.comment = comment
+        self.environment = environment
         self._test_runs_list = []
 
         xml = JUnitXml.fromfile(self.xunit_filename)
@@ -129,16 +135,16 @@ class TM4JTestRunReporter(object):
 
         testrun_json = {
           "projectKey": "TC",
-          "testPlanKey": "TC-P1",
-          "name": "QA OSSCWL REST API",
+          # "testPlanKey": "TC-P1",  # Are Test Plans required?
+          "name": suite.name,
           "status": "Done",
           "items": [
             {
               "testCaseKey": "TC-T1",
               "status": status_all,
-              "environment": "REST API",
-              "comment": "BDD Feature, 3/3 scenarios all passed",
-              "userKey": "ad718x",
+              "environment": self.environment,
+              "comment": self.comment,
+              "userKey": self.user_key,
               "executionTime": suite.time,
               "executionDate": suite.timestamp,
               "scriptResults": script_results
@@ -191,11 +197,11 @@ class TM4JTestRunReporter(object):
         return (script_result_list, counter.status_all)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     from pprint import pprint
 
     xml_test_file = 'tests/testharness/bdd/tm4j/xunit_samples/prove_script_results.xml'
-    reporter = TM4JTestRunReporter(xml_test_file)
+    reporter = TM4JTestRunReporter(xml_test_file, 'ad718x')
 
     results = reporter.all_testrun_reports
     pprint(results, indent=4)
