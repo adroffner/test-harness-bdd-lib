@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="QA OSSCWL REST API" tests="5" errors="1" failures="1" skip="1" timestamp="2018-11-23T19:13:43">
+<testsuite name="Example REST API Suite" tests="5" errors="1" failures="1" skip="1" timestamp="2018-11-23T19:13:43">
 	<testcase classname="rest_api.tests.RestApiTestCases" name="test_zero" time="0.713"></testcase>
 	<testcase classname="rest_api.tests.RestApiTestCases" name="test_one" time="0.111">
 		<error/>

@@ -59,7 +59,7 @@ class SuiteStatusCounterTests(TestCase):
 
 # ====================================================================
 
-EXPECTED_TESTSUITE_NAME = 'QA OSSCWL REST API'
+EXPECTED_TESTSUITE_NAME = 'Example REST API Suite'
 EXPECTED_PROJECT_KEY = 'TC'
 
 EXPECTED_TESTCASE_KEY = 'TC-T1'

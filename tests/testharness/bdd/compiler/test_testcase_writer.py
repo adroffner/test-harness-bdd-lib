@@ -16,7 +16,7 @@ class FeatureTestCase(unittest.TestCase):
 
     FEATURE_FILE = 'tests/features/TC-T1.feature'
 
-    def test_scenario(self):
+    def test_scenario_TC_T1(self):
         "BDD Scenario(s): tests/features/TC-T1.feature"
         run(self.FEATURE_FILE, self, verbose=True)
 
@@ -43,21 +43,22 @@ class FeatureTestCase(unittest.TestCase):
 
 class CompilerFunctionsTests(TestCase):
 
-    def test_get_py_name(self):
+    def test_get_scenario_id(self):
         data = [
-            # (expected_result, raw_str),
-            ('Raw_String', 'Raw String'),
-            ('a100_Authentic', '100% Authentic'),  # invalid - starts with a digit
+            # (expected_scenario_id, feature_filename)
+            ('Test_Scenario', 'Test-Scenario.feature'),
+            ('a100_Authentic', '100%~Authentic.feature'),  # invalid - starts with a digit
         ]
 
-        for expected_result, raw_str in data:
-            result = testcase_writer.get_py_name(raw_str)
+        for expected_result, feature_filename in data:
+            result = testcase_writer.get_scenario_id(feature_filename)
             self.assertEqual(result, expected_result)
 
     def test_get_bdd_module_name(self):
         data = [
-            # (expected_result, feature_file),
-            ('fake_TC_T1_feature.py', 'tests/features/TC-T1.feature'),
+            # (expected_result, feature_filename) or ...
+            # (scenario_id, bdd_filename), feature_filename),
+            (('TC_T1', 'fake_TC_T1_feature.py'), 'tests/features/TC-T1.feature'),
         ]
 
         for expected_result, feature_file in data:
@@ -75,7 +76,7 @@ class CompilerTestCaseWriterTests(TestCase):
         with mock.patch('testharness.bdd.compiler.testcase_writer.open',
                         mock_testing_file) as mock_file:
             writer = testcase_writer.BDDTestCaseWriter()
-            fake_file_path = testcase_writer.get_bdd_module_name(
+            (scenario_id, fake_file_path) = testcase_writer.get_bdd_module_name(
                 writer.TESTING_PREFIX, writer.FEATURE_FILE)
 
             # Mocked output file must not exist to compile a new one.
