@@ -84,27 +84,27 @@ EXPECTED_TESTRUN_RESULTS = [
                 'executionTime': 0.847,
                 'scriptResults': [
                     {
-                        'comment': 'test_zero',
+                        'comment': 'test_zero_TC_T1',
                         'index': 0,
                         'status': 'Pass'
                     },
                     {
-                        'comment': 'test_one',
+                        'comment': 'test_one_TC_T1',
                         'index': 1,
                         'status': 'Blocked'
                     },
                     {
-                        'comment': 'test_two',
+                        'comment': 'test_two_TC_T1',
                         'index': 2,
                         'status': 'Not Executed'
                     },
                     {
-                        'comment': 'test_three',
+                        'comment': 'test_three_TC_T1',
                         'index': 3,
                         'status': 'Fail'
                     },
                     {
-                        'comment': 'test_four',
+                        'comment': 'test_four_TC_T1',
                         'index': 4,
                         'status': 'Pass'
                     }

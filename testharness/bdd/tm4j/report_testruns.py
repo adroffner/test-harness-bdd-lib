@@ -7,8 +7,13 @@ unittest can create XUnit XML, but not the TM4J "testrun" JSON format.
 from junitparser import JUnitXml, TestSuite, Error, Failure, Skipped
 
 import logging
+import warnings
 
 log = logging.getLogger(__name__)
+
+
+class MultipleTestCaseKeysWarning(UserWarning):
+    pass
 
 
 class SuiteStatusCounter(object):
@@ -125,22 +130,22 @@ class TM4JTestRunReporter(object):
     def get_testrun(self, suite):
         """ Get Test Run.
 
-        Create a Test Run JSON dict from the test "suite".
+        Create a Test Run JSON dict from one "testsuite".
 
         :param suite: an XUnit testsuite DOM
         :returns: a Test Run JSON dict
         """
 
-        (script_results, status_all) = self.get_script_results(suite)
+        (testcase_key, script_results, status_all) = self.get_script_results(suite)
 
         testrun_json = {
-          "projectKey": "TC",
+          "projectKey": testcase_key.split('-')[0],
           # "testPlanKey": "TC-P1",  # Are Test Plans required?
           "name": suite.name,
           "status": "Done",
           "items": [
             {
-              "testCaseKey": "TC-T1",
+              "testCaseKey": testcase_key,
               "status": status_all,
               "environment": self.environment,
               "comment": self.comment,
@@ -157,7 +162,8 @@ class TM4JTestRunReporter(object):
     def get_script_results(self, suite):
         """ Get Script Results.
 
-        Get testrun scriptResults from test suite as JSON list.
+        Get testrun scriptResults from "testcase(s)" in the "testsuite".
+        Compose a JSON list of all "testcase(s)" and the overall status code.
         This returns a tuple to report the individual and overall health.
 
             Return tuple: (script_results, status_all)
@@ -174,15 +180,26 @@ class TM4JTestRunReporter(object):
             ]
 
         :param suite: an XUnit testsuite DOM
-        :returns: a tuple (script_results, status_all)
+        :returns: a tuple (testcase_key, script_results, status_all)
         """
 
         script_result_list = []
+        testcase_key = ''
         counter = SuiteStatusCounter()
 
         for index, case in enumerate(suite):
             # handle cases
             log.debug('[%s] Test Case: %s', self.xunit_filename, case)
+
+            # Set TestCaseKey: All keys must match the same ticket.
+            if testcase_key:
+                if not case.name.endswith(testcase_key.replace('-', '_')):
+                    warnings.warn('Only one test-case key is supported.',
+                                  MultipleTestCaseKeysWarning)
+                    continue  # for loop: suite
+            else:
+                # Assume JIRA Test Case Key is last 2 tokens in name="..."
+                testcase_key = '-'.join(case.name.split('_')[-2:])
 
             status_code = self.testcase_status(case.result)
             counter.tally(status_code)
@@ -194,14 +211,15 @@ class TM4JTestRunReporter(object):
             }
             script_result_list.append(script_result)
 
-        return (script_result_list, counter.status_all)
+        return (testcase_key, script_result_list, counter.status_all)
 
 
 if __name__ == '__main__':  # pragma: no cover
     from pprint import pprint
 
     xml_test_file = 'tests/testharness/bdd/tm4j/xunit_samples/prove_script_results.xml'
-    reporter = TM4JTestRunReporter(xml_test_file, 'ad718x')
+    reporter = TM4JTestRunReporter(xml_test_file, 'someUserKey',
+                                   comment='This translates xunit XML to JIRA TM4J JSON testruns.')
 
     results = reporter.all_testrun_reports
     pprint(results, indent=4)

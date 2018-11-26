@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuite name="Example REST API Suite" tests="5" errors="1" failures="1" skip="1" timestamp="2018-11-23T19:13:43">
-	<testcase classname="rest_api.tests.RestApiTestCases" name="test_zero" time="0.713"></testcase>
-	<testcase classname="rest_api.tests.RestApiTestCases" name="test_one" time="0.111">
+	<testcase classname="rest_api.tests.RestApiTestCases" name="test_zero_TC_T1" time="0.713">
+	</testcase>
+	<testcase classname="rest_api.tests.RestApiTestCases" name="test_one_TC_T1" time="0.111">
 		<error/>
 	</testcase>
-	<testcase classname="rest_api.tests.RestApiTestCases" name="test_two" time="0.008">
+	<testcase classname="rest_api.tests.RestApiTestCases" name="test_two_TC_T1" time="0.008">
 		<skipped/>
 	</testcase>
-	<testcase classname="rest_api.tests.RestApiTestCases" name="test_three" time="0.008">
+	<testcase classname="rest_api.tests.RestApiTestCases" name="test_three_TC_T1" time="0.008">
 		<failure message="This test failed quality control" type="ERROR">
 			Error message from system.
 		</failure>
 	</testcase>
-	<testcase classname="rest_api.tests.RestApiTestCases" name="test_four" time="0.007"></testcase>
+	<testcase classname="rest_api.tests.RestApiTestCases" name="test_four_TC_T1" time="0.007">
+	</testcase>
 </testsuite>
