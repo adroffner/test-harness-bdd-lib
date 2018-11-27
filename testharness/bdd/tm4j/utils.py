@@ -70,7 +70,7 @@ def create_bdd_feature_file(testcase_json):
         feature_filename = '{}.feature'.format(testcase_key)
 
         with open(feature_filename, 'w') as f:
-            print(feature_header, file=f)
-            print(scenario_text, file=f)
+            f.write(feature_header)
+            f.write(scenario_text)
 
         return feature_filename
