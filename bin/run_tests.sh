@@ -7,7 +7,10 @@
 
 PYTHON=python3
 
-$PYTHON ./setup.py nosetests
+# $PYTHON ./setup.py test
+$PYTHON -m coverage run ./setup.py test
+$PYTHON -m coverage html
+$PYTHON -m coverage xml
 
 echo
 echo 'See unit test coverage:'
