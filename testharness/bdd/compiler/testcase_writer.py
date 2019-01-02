@@ -97,7 +97,7 @@ class BDDTestCaseWriter(unittest.TestCase):
                 steps_lines = '\n'.join(steps_code.split('\n')[1:])
 
                 (scenario_id, bdd_filename) = get_bdd_module_name(self.TESTING_PREFIX, self.FEATURE_FILE)
-                with open(self.RESULT_DIRECTORY + '/' + bdd_filename, 'w') as f:
+                with open(os.path.join(self.RESULT_DIRECTORY, bdd_filename), 'w') as f:
                     print('# Feature File: {}'.format(self.FEATURE_FILE), file=f)
                     print(TEST_CASE_FILE_FMT.format_map({
                         'feature_file': self.FEATURE_FILE,

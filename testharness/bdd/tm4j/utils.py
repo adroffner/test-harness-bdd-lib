@@ -2,7 +2,7 @@
 
 These functions help build BDD processes that interact with TM4J.
 """
-
+import os
 import re
 
 SCENARIO_EXAMPLES_RE = re.compile(r'^\s*Examples:\s*$', flags=(re.I | re.M))
@@ -70,7 +70,7 @@ def create_bdd_feature_file(testcase_json, results_dir='.'):
         testcase_key = testcase_json['key']
         feature_filename = '{}.feature'.format(testcase_key)
 
-        with open(results_dir + '/' + feature_filename, 'w') as f:
+        with open(os.path.join(results_dir, feature_filename), 'w') as f:
             f.write(feature_header)
             f.write(scenario_text)
 

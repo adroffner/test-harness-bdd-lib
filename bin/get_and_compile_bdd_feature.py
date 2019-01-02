@@ -6,6 +6,7 @@ This script creates a full python test module for them.
 """
 from getpass import getpass
 import logging
+import os
 import pathlib
 import argparse
 from jira_client.tm4j import JiraTM4JClient
@@ -32,7 +33,7 @@ def _make_package_from_test_case_folder(folder_to_search_for, results_dir):
     return feature_file_directory
 
 
-def get_and_compile(folder_to_search_for, testing_prefix, results_dir='.'):
+def get_and_compile(folder_to_search_for, testing_prefix, results_dir='.', verbose=False):
     jira_username = input('Enter JIRA Account ATTUID: ')
     jira_password = getpass('Enter JIRA Password: ')
 
@@ -45,15 +46,13 @@ def get_and_compile(folder_to_search_for, testing_prefix, results_dir='.'):
         feature_file_directory = _make_package_from_test_case_folder(folder_to_search_for, results_dir)
 
         for test_case_json in test_case_results:
-            pprint(test_case_json, indent=4)
-            try:
-                feature_file = create_bdd_feature_file(test_case_json, feature_file_directory)
-                if feature_file:
-                    testcase_writer.compile(feature_file_directory + '/' + feature_file,
-                                            testing_prefix,
-                                            feature_file_directory)
-            except Exception:
-                logging.exception('Error with json: {}'.format(test_case_json))
+            if verbose:
+                pprint(test_case_json, indent=4)
+            feature_file = create_bdd_feature_file(test_case_json, feature_file_directory)
+            if feature_file:
+                testcase_writer.compile(os.path.join(feature_file_directory, feature_file),
+                                        testing_prefix,
+                                        feature_file_directory)
 
 
 if __name__ == '__main__':
@@ -69,9 +68,11 @@ if __name__ == '__main__':
                         help='Set Testing Stage Prefix, e.g. "qa" Quality Assurance')
     parser.add_argument("-d", "--results_dir", default='.', metavar='<path/to/dir>',
                         help="A path to the directory you want your results in")
+    parser.add_argument('-v', '--verbose', default=False,
+                        help='Turn on extra printing; prints info about each TestCase ticket found.')
 
     args = parser.parse_args()
 
-    get_and_compile(args.test_case_folder_search, args.testing_prefix, args.results_dir)
+    get_and_compile(args.test_case_folder_search, args.testing_prefix, args.results_dir, args.verbose)
 
 
