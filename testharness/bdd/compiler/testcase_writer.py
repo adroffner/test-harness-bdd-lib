@@ -84,6 +84,7 @@ class BDDTestCaseWriter(unittest.TestCase):
 
     FEATURE_FILE = ''
     TESTING_PREFIX = 'test'
+    RESULT_DIRECTORY = '.'
 
     def bdd_morelia_write_code(self):
         """ Write BDD feature code """
@@ -96,7 +97,7 @@ class BDDTestCaseWriter(unittest.TestCase):
                 steps_lines = '\n'.join(steps_code.split('\n')[1:])
 
                 (scenario_id, bdd_filename) = get_bdd_module_name(self.TESTING_PREFIX, self.FEATURE_FILE)
-                with open(bdd_filename, 'w') as f:
+                with open(self.RESULT_DIRECTORY + '/' + bdd_filename, 'w') as f:
                     print('# Feature File: {}'.format(self.FEATURE_FILE), file=f)
                     print(TEST_CASE_FILE_FMT.format_map({
                         'feature_file': self.FEATURE_FILE,
@@ -115,7 +116,7 @@ class BDDTestCaseWriter(unittest.TestCase):
 # ========================================================================
 
 
-def compile(feature_file, testing_prefix='test'):
+def compile(feature_file, testing_prefix='test', results_directory='.'):
     """ BDD Test Case Module Compiler.
 
     This is the main entry point to the compiler.
@@ -123,6 +124,7 @@ def compile(feature_file, testing_prefix='test'):
 
     :param feature_file: A BDD Gherkin Feature file
     :param testing_prefix: Set Testing Stage Prefix, e.g. "qa" Quality Assurance
+    :param results_directory: valid directory where result files will be created
     :returns: True when compilation was successful
     """
 
@@ -135,6 +137,7 @@ def compile(feature_file, testing_prefix='test'):
 
     BDDTestCaseWriter.FEATURE_FILE = feature_file
     BDDTestCaseWriter.TESTING_PREFIX = testing_prefix
+    BDDTestCaseWriter.RESULT_DIRECTORY = results_directory
 
     print('Compiling Feature: {}...\n\n'.format(BDDTestCaseWriter.FEATURE_FILE),
           file=sys.stderr)

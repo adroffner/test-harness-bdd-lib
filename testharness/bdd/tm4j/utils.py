@@ -36,7 +36,7 @@ def _get_feature_scenario_header(testcase_json, has_outline=False):
     return header
 
 
-def create_bdd_feature_file(testcase_json):
+def create_bdd_feature_file(testcase_json, results_dir='.'):
     """ Create a BDD Feature File.
 
     Complete the "Feature:" file for a "BDD" type "test script".
@@ -50,6 +50,7 @@ def create_bdd_feature_file(testcase_json):
     every *.feature file for the whole JIRA project.
 
     :param dict testcase_json: a single /testcase/search record
+    :param results_dir: valid directory where result files will be created
     :returns: the *.feature filename that is now on disk
     """
 
@@ -69,7 +70,7 @@ def create_bdd_feature_file(testcase_json):
         testcase_key = testcase_json['key']
         feature_filename = '{}.feature'.format(testcase_key)
 
-        with open(feature_filename, 'w') as f:
+        with open(results_dir + '/' + feature_filename, 'w') as f:
             f.write(feature_header)
             f.write(scenario_text)
 
