@@ -23,7 +23,8 @@ TESTCASE_JSON = {
           "",
           "Examples:",
           "    | relative_url    | status_code | content_type     | field_list  |",
-          "    | /swagger.json   | 200         | application/json | swagger,basePath,paths,info,produces,consumes,tags,definitions,responses,host |",
+          ("    | /swagger.json   | 200         | application/json | "
+           "swagger,basePath,paths,info,produces,consumes,tags,definitions,responses,host |"),
           "    | /osscwl/servers | 200         | application/json | WFA_SERVERS,message |",
           "    | /osscwl         | 404         | application/json | message |"
       ]),
@@ -51,7 +52,7 @@ SCENARIO_TEXT = """        When User GETs endpoint <relative_url>
             | relative_url    | status_code | content_type     | field_list  |
             | /swagger.json   | 200         | application/json | swagger,basePath,paths,info,produces,consumes,tags,definitions,responses,host |
             | /osscwl/servers | 200         | application/json | WFA_SERVERS,message |
-            | /osscwl         | 404         | application/json | message |"""
+            | /osscwl         | 404         | application/json | message |"""  # noqa: E501
 
 
 class TM4JUtilsTests(TestCase):
