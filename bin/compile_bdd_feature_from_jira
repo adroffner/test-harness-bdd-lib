@@ -95,6 +95,7 @@ def get_and_compile(test_cases_folder, testing_prefix,
         if test_case_results:
             test_cases_package = _test_cases_folder2py_package(test_cases_folder, output_dir)
 
+            # Download Feature files and compile test modules.
             for test_case_json in test_case_results:
                 if verbose:
                     pprint(test_case_json, indent=4)
@@ -102,6 +103,16 @@ def get_and_compile(test_cases_folder, testing_prefix,
                 if feature_file:
                     testcase_writer.compile(os.path.join(test_cases_package, 'features', feature_file),
                                             testing_prefix, test_cases_package)
+
+            # TODO: Download Feature "attachments" data files.
+            features_dir = test_cases_package / 'features'
+            for feature_file in features_dir.glob('*.feature'):
+                data_dir = features_dir / 'data' / feature_file.stem
+                data_dir.mkdir(parents=True)
+                file_count = jira_client.download_test_case_attachments(feature_file.stem, data_dir)
+                if verbose:
+                    print('\tFeature "{}" has {} data files.'.format(feature_file.stem, file_count))
+
         else:
             raise ValueError('JIRA and TM4J have no "{}" BDD files'.format(test_cases_folder))
 
