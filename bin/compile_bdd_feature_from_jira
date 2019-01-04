@@ -29,10 +29,12 @@ TEST_CASES_JQL_FMT = 'projectKey = "{}" AND status = "Approved" AND folder = "{}
 def _test_cases_folder2py_package(test_cases_folder, output_dir='.'):
     """ Turn Test Cases Folder into Python Package.
 
-    Create python package directory under `output_dir`.
+    Create python package directory structure under `output_dir`.
         test_cases_folder := "/SubProject/STORY-001"
-        py_package        := ./output_dir/SubProject/STORY-001/__init__.py
-        Feaure Files      := ./output_dir/SubProject/STORY-001/*.feature
+        py_package        := ./output_dir/SubProject/__init__.py
+                             ./output_dir/SubProject/STORY-001/__init__.py
+        Feaure Files      := ./output_dir/SubProject/STORY-001/features/TEST-002.feature
+        Data Files        := ./output_dir/SubProject/STORY-001/features/data/TEST-002/*.*
 
     :param test_cases_folder: Test Cases folder like "/SubProject/STORY-001" in JIRA
     :param output_dir: existing output directory or '.'
@@ -52,8 +54,16 @@ def _test_cases_folder2py_package(test_cases_folder, output_dir='.'):
     if not (py_package_path.exists() and py_package_path.is_dir()):
         py_package_path.mkdir(parents=True)
 
-        init_file = py_package_path / '__init__.py'
-        init_file.touch()
+        # Write "__init__.py" in each python package directory.
+        py_partial_path = output_path
+        for p in test_cases_folder.split(os.sep):
+            py_partial_path = py_partial_path / p
+
+            init_file = py_partial_path / '__init__.py'
+            init_file.touch()
+
+        features_path = py_package_path / 'features' / 'data'
+        features_path.mkdir(parents=True)
 
     return py_package_path
 
@@ -88,9 +98,9 @@ def get_and_compile(test_cases_folder, testing_prefix,
             for test_case_json in test_case_results:
                 if verbose:
                     pprint(test_case_json, indent=4)
-                feature_file = create_bdd_feature_file(test_case_json, test_cases_package)
+                feature_file = create_bdd_feature_file(test_case_json, test_cases_package / 'features')
                 if feature_file:
-                    testcase_writer.compile(os.path.join(test_cases_package, feature_file),
+                    testcase_writer.compile(os.path.join(test_cases_package, 'features', feature_file),
                                             testing_prefix, test_cases_package)
         else:
             raise ValueError('JIRA and TM4J have no "{}" BDD files'.format(test_cases_folder))
