@@ -107,6 +107,8 @@ if __name__ == '__main__':
                         choices=['test', 'qa'],
                         default="test",
                         help='Set Testing Stage Prefix, e.g. "qa" Quality Assurance')
+    parser.add_argument("-k", "--project_key", default='MIC', metavar='<project-key>',
+                        help='A JIRA project key, e.g. "MIC" (microservices)')
     parser.add_argument("-d", "--output_dir", default='.', metavar='<output-dir>',
                         help="A path to the output directory")
     parser.add_argument('-v', '--verbose', action="store_true",
@@ -116,6 +118,7 @@ if __name__ == '__main__':
 
     try:
         get_and_compile(args.test_cases_folder, args.testing_prefix,
+                        project_key=args.project_key,
                         output_dir=args.output_dir, verbose=args.verbose)
     except ValueError as e:
         sys.stderr.write(str(e))
