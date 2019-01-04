@@ -12,6 +12,8 @@ import argparse
 # import logging
 import os
 import pathlib
+import sys
+
 from getpass import getpass
 from pprint import pprint
 
@@ -20,6 +22,8 @@ from jira_rest_clients.tm4j import JiraTM4JClient
 from testharness.bdd.compiler import testcase_writer
 from testharness.bdd.compiler.testcase_writer import PY_NAME_OK_RE
 from testharness.bdd.tm4j.utils import create_bdd_feature_file
+
+TEST_CASES_JQL_FMT = 'projectKey = "{}" AND status = "Approved" AND folder = "{}"'
 
 
 def _test_cases_folder2py_package(test_cases_folder, output_dir='.'):
@@ -54,13 +58,28 @@ def _test_cases_folder2py_package(test_cases_folder, output_dir='.'):
     return py_package_path
 
 
-def get_and_compile(test_cases_folder, testing_prefix, output_dir='.', verbose=False):
+def get_and_compile(test_cases_folder, testing_prefix,
+                    project_key='MIC', output_dir='.', verbose=False):
+    """ Get and Compile BDD Test Scripts.
+
+    :param test_cases_folder: JIRA Test Cases folder, e.g. "/Subproject/STORY-001"
+    :param testing_prefix: test stage prefix in ('test', 'qa')
+    :param project_key: JIRA "project key", e.g. "MIC" (microservices) or "INC" (incubate)
+    :param output_dir: optional target output must exist, default PWD
+    :param verbose: a boolean flag to show the JIRA BDD query
+    :raises: ValueError when test_cases_folder is no good
+    """
+
     jira_username = input('Enter JIRA Account ATTUID: ')
     jira_password = getpass('Enter JIRA Password: ')
 
+    # Test Cases Folder must start with slash for TM4J.
+    if not test_cases_folder.startswith('/'):
+        test_cases_folder = '/' + test_cases_folder
+
     with JiraTM4JClient(jira_username, jira_password) as jira_client:
         test_case_results = jira_client.search_test_cases(
-            'folder = "{}"'.format(test_cases_folder),
+            TEST_CASES_JQL_FMT.format(project_key, test_cases_folder),
             fields=['testScript', 'key', 'folder'])
 
         if test_case_results:
@@ -73,6 +92,8 @@ def get_and_compile(test_cases_folder, testing_prefix, output_dir='.', verbose=F
                 if feature_file:
                     testcase_writer.compile(os.path.join(test_cases_package, feature_file),
                                             testing_prefix, test_cases_package)
+        else:
+            raise ValueError('JIRA and TM4J have no "{}" BDD files'.format(test_cases_folder))
 
 
 if __name__ == '__main__':
@@ -93,5 +114,10 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    get_and_compile(args.test_cases_folder, args.testing_prefix,
-                    output_dir=args.output_dir, verbose=args.verbose)
+    try:
+        get_and_compile(args.test_cases_folder, args.testing_prefix,
+                        output_dir=args.output_dir, verbose=args.verbose)
+    except ValueError as e:
+        sys.stderr.write(str(e))
+        sys.stderr.write('\n')
+        sys.exit(1)
