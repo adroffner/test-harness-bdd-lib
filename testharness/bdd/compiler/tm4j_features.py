@@ -112,7 +112,8 @@ def get_tm4j_features(test_cases_folder, testing_prefix,
             features_dir = test_cases_package / 'features'
             for feature_file in features_dir.glob('*.feature'):
                 data_dir = features_dir / 'data' / feature_file.stem
-                data_dir.mkdir(parents=True)
+                if not (data_dir.exists() and data_dir.is_dir()):
+                    data_dir.mkdir(parents=True)
                 file_count = jira_client.download_test_case_attachments(feature_file.stem, data_dir)
                 if verbose:
                     log.info('\tFeature "{}" has {} data files.'.format(feature_file.stem, file_count))
