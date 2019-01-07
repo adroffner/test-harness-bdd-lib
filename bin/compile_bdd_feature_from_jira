@@ -1,0 +1,50 @@
+#! /usr/bin/env python
+""" Compile BDD Test Cases from JIRA TM4J Folder
+
+Test Management for JIRA stores BDD Test Cases in folders.
+The TM4J REST API downloads any Gherkin feature files in a chosen folder.
+
+BDD-Morelia compiles the un-implemented test steps from a Feature.
+This script creates a directory of python test modules for them.
+"""
+
+import argparse
+import sys
+
+from getpass import getpass
+
+from testharness.bdd.compiler.tm4j_features import get_tm4j_features
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description="Compile BDD Test Cases from JIRA TM4J Folder")
+
+    parser.add_argument("test_cases_folder",
+                        help='The JIRA Test Cases folder, e.g. "/Subproject/STORY-001"')
+    parser.add_argument("-p", "--testing_prefix",
+                        metavar='"test_stage"',
+                        choices=['test', 'qa'],
+                        default="test",
+                        help='Set Testing Stage Prefix, e.g. "qa" Quality Assurance')
+    parser.add_argument("-k", "--project_key", default='MIC', metavar='<project-key>',
+                        help='A JIRA project key, e.g. "MIC" (microservices)')
+    parser.add_argument("-d", "--output_dir", default='.', metavar='<output-dir>',
+                        help="A path to the output directory")
+    parser.add_argument('-v', '--verbose', action="store_true",
+                        help='Show info about each Test Case ticket.')
+
+    args = parser.parse_args()
+
+    try:
+        jira_username = input('Enter JIRA Account ATTUID: ')
+        jira_password = getpass('Enter JIRA Password: ')
+
+        get_tm4j_features(args.test_cases_folder, args.testing_prefix,
+                          jira_username, jira_password,
+                          project_key=args.project_key, output_dir=args.output_dir,
+                          compile_new_modules=True, verbose=args.verbose)
+    except ValueError as e:
+        sys.stderr.write(str(e))
+        sys.stderr.write('\n')
+        sys.exit(1)

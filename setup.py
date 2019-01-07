@@ -21,7 +21,11 @@ setup(name='testharness_bdd',
       install_requires=[
           'morelia>=0.6.5',
       ],
-      scripts=['bin/compile_bdd_feature.py'],
+      scripts=[
+          'bin/compile_bdd_feature',
+          'bin/compile_bdd_feature_from_jira',
+          'bin/update_bdd_feature_from_jira',
+      ],
       # NO nosetests: junitparser.TestSuite confuses nose, testing ERRORs
       # test_suite='nose.collector',
       # tests_require=['nose>=1.3.7', 'coverage>=4.4.1'],
