@@ -1,0 +1,12 @@
+# Incubate PyPI Server:
+--trusted-host=roattnap03.gcsc.att.com
+--extra-index-url=http://roattnap03.gcsc.att.com:8100/simple/
+
+jira-rest-clients>=0.1b1
+junitparser>=1.2.2
+Morelia>=0.6.5
+nose>=1.3.7
+requests>=2.21.0
+testharness-bdd>=0.1b1
+testharness-rest-api>=0.1b1
+testharness-selenium>=0.1b1
