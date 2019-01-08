@@ -25,7 +25,31 @@ log = logging.getLogger(__name__)
 TEST_CASES_JQL_FMT = 'projectKey = "{}" AND status = "Approved" AND folder = "{}"'
 
 
-def _test_cases_folder2py_package(test_cases_folder, output_dir='.'):
+def _start_project(output_path, verbose):
+    """ Start Project.
+
+    Start the Git repository project by copying over the static files.
+    The start-project/ directory has the common files.
+
+    :param pathlib.Path output_path: Path to copy all the start-project/ files.
+    :param bool verbose: verbosity logging is ON
+    """
+
+    start_project_path = pathlib.Path(os.path.split(__file__)[0]) / 'start-project'
+    for path in start_project_path.rglob('*'):
+        if verbose:
+            log.info('start-project file: "{}"'.format(path.relative_to(start_project_path)))
+        short_path = path.relative_to(start_project_path)
+        if path.is_dir():
+            (output_path / short_path).mkdir(parents=True)
+        else:
+            # copy file over...
+            new_path = output_path / short_path
+            with new_path.open(mode='wb') as f:
+                f.write(path.read_bytes())
+
+
+def _test_cases_folder2py_package(test_cases_folder, output_dir, verbose):
     """ Turn Test Cases Folder into Python Package.
 
     Create python package directory structure under `output_dir`.
@@ -35,14 +59,18 @@ def _test_cases_folder2py_package(test_cases_folder, output_dir='.'):
         Feaure Files      := ./output_dir/SubProject/STORY-001/features/TEST-002.feature
         Data Files        := ./output_dir/SubProject/STORY-001/features/data/TEST-002/*.*
 
-    :param test_cases_folder: Test Cases folder like "/SubProject/STORY-001" in JIRA
-    :param output_dir: existing output directory or '.'
+    :param str test_cases_folder: Test Cases folder like "/SubProject/STORY-001" in JIRA
+    :param str output_dir: existing output directory
+    :param bool verbose: verbosity logging is ON
     :returns: py_package_path a pathlib.Path object to the new directory.
     """
 
     output_path = pathlib.Path(output_dir)
     if not (output_path.exists() and output_path.is_dir()):
         raise ValueError('Missing or invalid output_path={}'.format(output_path))
+
+    # Copy boilerplate start-project/ files under output_path.
+    _start_project(output_path)
 
     # Convert test_cases_folder path into valid python package dirs.
     test_cases_folder = os.path.join(*[
