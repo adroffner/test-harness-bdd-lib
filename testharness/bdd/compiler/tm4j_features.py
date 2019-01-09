@@ -40,13 +40,14 @@ def _start_project(output_path, verbose):
         if verbose:
             log.info('start-project file: "{}"'.format(path.relative_to(start_project_path)))
         short_path = path.relative_to(start_project_path)
-        if path.is_dir():
-            (output_path / short_path).mkdir(parents=True)
-        else:
-            # copy file over...
-            new_path = output_path / short_path
-            with new_path.open(mode='wb') as f:
-                f.write(path.read_bytes())
+        new_path = output_path / short_path
+        if not new_path.exists():
+            if path.is_dir():
+                new_path.mkdir(parents=True)
+            else:
+                # copy file over...
+                with new_path.open(mode='wb') as f:
+                    f.write(path.read_bytes())
 
 
 def _test_cases_folder2py_package(test_cases_folder, output_dir, verbose):
@@ -70,7 +71,7 @@ def _test_cases_folder2py_package(test_cases_folder, output_dir, verbose):
         raise ValueError('Missing or invalid output_path={}'.format(output_path))
 
     # Copy boilerplate start-project/ files under output_path.
-    _start_project(output_path)
+    _start_project(output_path, verbose)
 
     # Convert test_cases_folder path into valid python package dirs.
     test_cases_folder = os.path.join(*[
@@ -125,7 +126,7 @@ def get_tm4j_features(test_cases_folder, testing_prefix,
             fields=['testScript', 'key', 'folder'])
 
         if test_case_results:
-            test_cases_package = _test_cases_folder2py_package(test_cases_folder, output_dir)
+            test_cases_package = _test_cases_folder2py_package(test_cases_folder, output_dir, verbose)
 
             # Download Feature files (and compile test modules when flag is True).
             for test_case_json in test_case_results:
