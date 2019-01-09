@@ -14,4 +14,4 @@ Then, learn to compile the ".feature" file into python3 "unittest.TestCase" step
 """
 
 
-__version__ = '0.2b1'  # pragma: no cover
+__version__ = '0.2b2'  # pragma: no cover
