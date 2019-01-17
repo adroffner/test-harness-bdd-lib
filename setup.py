@@ -18,6 +18,7 @@ setup(name='testharness_bdd',
       author_email='ad718x@us.att.com',
       url='https://codecloud.web.att.com/projects/ST_TITAN/repos/test-harness-bdd-lib/browse',
       packages=find_packages(exclude=['docs', 'tests']),
+      include_package_data=True,
       install_requires=[
           'morelia>=0.6.5',
       ],
