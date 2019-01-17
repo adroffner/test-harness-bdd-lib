@@ -4,6 +4,8 @@
 import json
 import os.path
 
+UNPARSEABLE_JSON_TOKEN = '<Unparseable JSON Document>'
+
 
 class DataFileError(ValueError):
     """ BDD Data File Error.
@@ -115,11 +117,15 @@ class JSONDataLoaderMixin(BaseDataLoaderMixin):
         file_path = self.get_path(data_filename)
 
         data = {}
-        with open(file_path, 'rb') as f:
-            try:
-                data = json.load(f)
-            except json.JSONDecodeError as e:
-                raise DataFileError(file_path) from e
+        try:
+            with open(file_path, 'rb') as f:
+                try:
+                    data = json.load(f)
+                except json.JSONDecodeError as e:
+                    data = UNPARSEABLE_JSON_TOKEN
+        except OSError as e:
+            raise DataFileError(file_path) from e
+
         return data
 
 
