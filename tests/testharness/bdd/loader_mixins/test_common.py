@@ -3,6 +3,7 @@ from unittest import TestCase, mock
 import json
 
 from testharness.bdd.loader_mixins.common import (
+    UNPARSEABLE_JSON_TOKEN,
     DataFileError,
     BaseDataLoaderMixin,
     JSONDataLoaderMixin,
@@ -75,18 +76,39 @@ class JSONDataLoaderMixinTests(TestCase):
             self.assertIsInstance(data, dict)
 
     def test_data_loader_mixin_load_json_decode_error(self):
-        "Prove JSONDataLoaderMixin load_json() raises error on decode error"
+        "Prove JSONDataLoaderMixin load_json() returns error token on decode error"
 
         expected_data_file = 'api_data.json'
 
         # Invalid JSON data
-        expected_data = "{'single': 'quotes', 'invalid': true}"
-        mock_load_file = mock.mock_open(read_data=expected_data)
+        input_data = "{'single': 'quotes', 'invalid': true}"
+        expected_data = UNPARSEABLE_JSON_TOKEN
+        mock_load_file = mock.mock_open(read_data=input_data)
 
         loader = JSONDataLoaderMixin()
         loader.FEATURE_FILE = 'project/features/REST-API.feature'
 
-        with self.assertRaisesRegex(DataFileError, loader.get_path(expected_data_file)):
+        with mock.patch('testharness.bdd.loader_mixins.common.open', mock_load_file):
+            data = loader.load_json(expected_data_file)
+
+            mock_load_file.assert_called_once_with(
+                'project/features/data/REST-API/{}'.format(expected_data_file),
+                'rb')
+            self.assertEqual(data, expected_data)
+            self.assertIsInstance(data, str)
+
+    def test_data_loader_mixin_load_json_os_error(self):
+        "Prove JSONDataLoaderMixin load_json() raises DataFileError on file I/O error "
+
+        expected_data_file = 'api_data.json'
+
+        # Missing data file!
+        mock_load_file = mock.MagicMock(side_effect=FileNotFoundError('missing data file'))
+
+        loader = JSONDataLoaderMixin()
+        loader.FEATURE_FILE = 'project/features/REST-API.feature'
+
+        with self.assertRaises(DataFileError):
             with mock.patch('testharness.bdd.loader_mixins.common.open', mock_load_file):
                 loader.load_json(expected_data_file)
 
