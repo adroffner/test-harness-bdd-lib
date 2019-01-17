@@ -20,6 +20,7 @@ setup(name='testharness_bdd',
       packages=find_packages(exclude=['docs', 'tests']),
       include_package_data=True,
       install_requires=[
+          'jira_rest_clients>=0.1b1',
           'morelia>=0.6.5',
       ],
       scripts=[
@@ -32,7 +33,7 @@ setup(name='testharness_bdd',
       # tests_require=['nose>=1.3.7', 'coverage>=4.4.1'],
       # NOTE: ./setup.py nosetests <= needs "setup_requires"
       setup_requires=[
-          # 'nose>=1.3.7',
+          'nose>=1.3.7',
           'coverage>=4.4.1'
       ],
       keywords=[
