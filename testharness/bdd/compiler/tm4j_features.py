@@ -49,6 +49,10 @@ def _start_project(output_path, verbose):
                 with new_path.open(mode='wb') as f:
                     f.write(path.read_bytes())
 
+                # Make bin/* files executable.
+                if short_path.parts[0] == 'bin':
+                    new_path.chmod(0o775)
+
 
 def _test_cases_folder2py_package(test_cases_folder, output_dir, verbose):
     """ Turn Test Cases Folder into Python Package.
