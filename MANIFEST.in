@@ -1,0 +1,2 @@
+include testharness/bdd/compiler/start-project/*
+include testharness/bdd/compiler/start-project/bin/*
