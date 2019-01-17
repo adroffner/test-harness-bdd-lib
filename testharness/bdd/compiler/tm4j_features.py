@@ -148,4 +148,10 @@ def get_tm4j_features(test_cases_folder, testing_prefix,
                     log.info('\tFeature "{}" has {} data files.'.format(feature_file.stem, file_count))
 
         else:
-            raise ValueError('JIRA and TM4J have no "{}" BDD files'.format(test_cases_folder))
+            raise ValueError("""
+JIRA and TM4J found no "{}" BDD Feature files ready to run.
+
+    Make sure "{}" is the folder name as it appears in JIRA.
+    Make sure test case tickets have Status: "Approved" when ready to run.
+
+""".format(test_cases_folder, test_cases_folder))
