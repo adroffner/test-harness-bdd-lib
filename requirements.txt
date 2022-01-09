@@ -3,5 +3,5 @@
 ## --extra-index-url=
 
 # jira_rest_clients>=0.1b1
-# junitparser>=1.2.2
+junitparser>=1.2.2
 morelia>=0.6.5

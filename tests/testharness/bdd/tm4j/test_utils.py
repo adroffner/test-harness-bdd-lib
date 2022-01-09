@@ -1,3 +1,4 @@
+import unittest
 from unittest import TestCase, mock
 
 from testharness.bdd.tm4j import utils
@@ -55,6 +56,7 @@ SCENARIO_TEXT = """        When User GETs endpoint <relative_url>
             | /osscwl         | 404         | application/json | message |"""  # noqa: E501
 
 
+@unittest.skip('Removing JIRA TM4J')
 class TM4JUtilsTests(TestCase):
 
     maxDiff = None

@@ -1,3 +1,4 @@
+import unittest
 from unittest import TestCase
 
 import os.path
@@ -26,20 +27,21 @@ EXPECTED_STATUS_ALL = [
 ]
 
 
+@unittest.skip('Removing JIRA TM4J')
 class SuiteStatusCounterTests(TestCase):
 
     def setUp(self):
         self.machine = report_testruns.SuiteStatusCounter()
 
     def test_counters_ready(self):
-        "Prove counters handle all statuses starting at zero"
+        """Prove counters handle all statuses starting at zero"""
 
         for status in EXPECTED_STATUSES:
             self.assertIn(status, self.machine.counters)
             self.assertEqual(self.machine.counters[status], 0)
 
     def test_counters_tally(self):
-        "Prove each counter can add +1 to status tally"
+        """Prove each counter can add +1 to status tally"""
 
         for status in EXPECTED_STATUSES:
             self.assertEqual(self.machine.counters[status], 0)
@@ -57,14 +59,15 @@ class SuiteStatusCounterTests(TestCase):
             }
             self.assertEqual(self.machine.status_all, expected_status_all)
 
+
 # ====================================================================
 
 EXPECTED_TESTSUITE_NAME = 'Example REST API Suite'
 EXPECTED_PROJECT_KEY = 'TC'
 
 EXPECTED_TESTCASE_KEY = 'TC-T1'
-EXPECTED_USER_KEY = 'ad718x'
-EXPECTED_COMMENT = 'This is only a test. If it had been an acutal emergency...'
+EXPECTED_USER_KEY = 'username'
+EXPECTED_COMMENT = 'This is only a test. If it had been an actual emergency...'
 EXPECTED_ENVIRONMENT = 'REST API'
 
 EXPECTED_TESTRUN_RESULTS = [
@@ -115,6 +118,7 @@ EXPECTED_TESTRUN_RESULTS = [
 ]
 
 
+@unittest.skip('Removing JIRA TM4J')
 class TM4JTestRunReporterTests(TestCase):
 
     maxDiff = None
