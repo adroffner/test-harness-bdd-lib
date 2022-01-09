@@ -24,7 +24,7 @@ Feature:
 
         Examples:
                 | relative_url    | status_code | content_type     | field_list | message_text | post_payload |
-                | /osscwl/view    | 401         | application/json | TRK,ROWS,message    | SEC102E INCORRECT OR INVALID SIGNON | osscwl_view_login_failure_input.json |
+                | /sample/view    | 401         | application/json | TRK,ROWS,message    | SEC102E INCORRECT OR INVALID SIGNON | sample_view_login_failure_input.json |
 """
 
 

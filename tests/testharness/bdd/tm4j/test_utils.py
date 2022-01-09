@@ -26,8 +26,8 @@ TESTCASE_JSON = {
           "    | relative_url    | status_code | content_type     | field_list  |",
           ("    | /swagger.json   | 200         | application/json | "
            "swagger,basePath,paths,info,produces,consumes,tags,definitions,responses,host |"),
-          "    | /osscwl/servers | 200         | application/json | WFA_SERVERS,message |",
-          "    | /osscwl         | 404         | application/json | message |"
+          "    | /sample/servers | 200         | application/json | WFA_SERVERS,message |",
+          "    | /sample         | 404         | application/json | message |"
       ]),
       "id": 2,
       "type": "BDD"
@@ -52,8 +52,8 @@ SCENARIO_TEXT = """        When User GETs endpoint <relative_url>
         Examples:
             | relative_url    | status_code | content_type     | field_list  |
             | /swagger.json   | 200         | application/json | swagger,basePath,paths,info,produces,consumes,tags,definitions,responses,host |
-            | /osscwl/servers | 200         | application/json | WFA_SERVERS,message |
-            | /osscwl         | 404         | application/json | message |"""  # noqa: E501
+            | /sample/servers | 200         | application/json | WFA_SERVERS,message |
+            | /sample         | 404         | application/json | message |"""  # noqa: E501
 
 
 @unittest.skip('Removing JIRA TM4J')
