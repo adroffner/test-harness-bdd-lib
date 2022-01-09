@@ -2,7 +2,7 @@
 """
 
 import json
-import os.path
+# from pathlib import Path
 
 UNPARSEABLE_JSON_TOKEN = '<Unparseable JSON Document>'
 
@@ -22,23 +22,23 @@ class BaseDataLoaderMixin:
     The data filename is the "Examples:" data table cell.
     """
 
-    FEATURE_FILE = ''
+    FEATURE_FILE = None  # Should be a Path() object
 
     @property
     def data_files_dir(self):
         """ Data Files Directory.
 
         Parse the FEATURE_FILE attribute to find this directory.
-        The directory must already exist and be popluated.
+        The directory must already exist and be populated.
 
-            FEATURE_FILE:   'project/features/TC-T2.feature'
-            data_files_dir: 'project/features/data/TC-T2'
+            FEATURE_FILE:   Path('project/features/TC-T2.feature')
+            data_files_dir: Path('project/features/data/TC-T2')
         """
 
         if not hasattr(self, '_data_files_dir'):
-            (root_dir, feature_file) = os.path.split(self.FEATURE_FILE)
+            (root_dir, feature_file) = (self.FEATURE_FILE.parent, self.FEATURE_FILE.name)
             feature_code = feature_file.split('.')[0]
-            self._data_files_dir = os.path.join(root_dir, 'data', feature_code)
+            self._data_files_dir = root_dir / 'data' / feature_code
 
         return self._data_files_dir
 
@@ -47,11 +47,11 @@ class BaseDataLoaderMixin:
 
         Get the data file path in the data_files_dir.
 
-        :param str data_filename: short filename without directory
+        :param data_filename: short filename without directory
         :returns: path to file
         """
 
-        file_path = os.path.join(self.data_files_dir, data_filename)
+        file_path = self.data_files_dir / data_filename
         return file_path
 
     def load_data(self, data_filename):
@@ -62,7 +62,7 @@ class BaseDataLoaderMixin:
         Subclasses should make similar methods to return other
         python object types.
 
-        :param str data_filename: short filename without directory
+        :param data_filename: short filename without directory
         :returns: file data as bytes
         """
 
@@ -90,7 +90,7 @@ class TextDataLoaderMixin(BaseDataLoaderMixin):
 
         Load text data from the file in the data_files_dir.
 
-        :param str data_filename: short filename without directory
+        :param data_filename: short filename without directory
         :returns: file data as str
         """
 
@@ -116,7 +116,7 @@ class JSONDataLoaderMixin(BaseDataLoaderMixin):
 
         Load JSON data from the file in the data_files_dir.
 
-        :param str data_filename: short filename without directory
+        :param data_filename: short filename without directory
         :returns: file data as JSON dict
         """
 
@@ -126,7 +126,7 @@ class JSONDataLoaderMixin(BaseDataLoaderMixin):
             with open(file_path, 'rb') as f:
                 try:
                     data = json.load(f)
-                except json.JSONDecodeError as e:
+                except json.JSONDecodeError:
                     data = UNPARSEABLE_JSON_TOKEN
         except OSError as e:
             raise DataFileError(file_path) from e
@@ -142,4 +142,4 @@ if __name__ == '__main__':  # pragma: no cover
     loader = ExampleLoader()
     print(loader.data_files_dir)
 
-    loader.load_text('hello.txt')
+    loader.load_json('hello.txt')

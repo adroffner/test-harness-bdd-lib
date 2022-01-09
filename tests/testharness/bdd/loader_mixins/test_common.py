@@ -1,6 +1,7 @@
 from unittest import TestCase, mock
 
 import json
+from pathlib import Path
 
 from testharness.bdd.loader_mixins.common import (
     UNPARSEABLE_JSON_TOKEN,
@@ -9,6 +10,8 @@ from testharness.bdd.loader_mixins.common import (
     JSONDataLoaderMixin,
     TextDataLoaderMixin
 )
+
+FEATURES_DIR = Path('project', 'features')
 
 
 class BaseDataLoaderMixinTests(TestCase):
@@ -19,11 +22,11 @@ class BaseDataLoaderMixinTests(TestCase):
         expected_data_file = 'test_data.txt'
 
         loader = BaseDataLoaderMixin()
-        loader.FEATURE_FILE = 'project/features/TC-T1.feature'
+        loader.FEATURE_FILE = FEATURES_DIR / 'TC-T1.feature'
 
-        self.assertEqual(loader.data_files_dir, 'project/features/data/TC-T1')
-        self.assertEqual(loader.get_path(expected_data_file),
-                         'project/features/data/TC-T1/{}'.format(expected_data_file))
+        feature_key_dir = FEATURES_DIR / 'data' / 'TC-T1'
+        self.assertEqual(loader.data_files_dir, feature_key_dir)
+        self.assertEqual(loader.get_path(expected_data_file), feature_key_dir / expected_data_file)
 
     def test_data_loader_mixin_load_data(self):
         """Prove BaseDataLoaderMixin load_data()"""
@@ -34,13 +37,13 @@ class BaseDataLoaderMixinTests(TestCase):
         mock_load_file = mock.mock_open(read_data=expected_data)
 
         loader = BaseDataLoaderMixin()
-        loader.FEATURE_FILE = 'project/features/Raw.feature'
+        loader.FEATURE_FILE = FEATURES_DIR / 'Raw.feature'
 
         with mock.patch('testharness.bdd.loader_mixins.common.open', mock_load_file):
             data = loader.load_data(expected_data_file)
 
             mock_load_file.assert_called_once_with(
-                'project/features/data/Raw/{}'.format(expected_data_file),
+                FEATURES_DIR / 'data' / 'Raw' / expected_data_file,
                 'rb')
             self.assertEqual(data, expected_data)
             self.assertIsInstance(data, bytes)
@@ -64,13 +67,13 @@ class JSONDataLoaderMixinTests(TestCase):
         mock_load_file = mock.mock_open(read_data=json.dumps(expected_data))
 
         loader = JSONDataLoaderMixin()
-        loader.FEATURE_FILE = 'project/features/REST-API.feature'
+        loader.FEATURE_FILE = Path('project/features/REST-API.feature')
 
         with mock.patch('testharness.bdd.loader_mixins.common.open', mock_load_file):
             data = loader.load_json(expected_data_file)
 
             mock_load_file.assert_called_once_with(
-                'project/features/data/REST-API/{}'.format(expected_data_file),
+                FEATURES_DIR / 'data' / 'REST-API' / expected_data_file,
                 'rb')
             self.assertEqual(data, expected_data)
             self.assertIsInstance(data, dict)
@@ -86,13 +89,13 @@ class JSONDataLoaderMixinTests(TestCase):
         mock_load_file = mock.mock_open(read_data=input_data)
 
         loader = JSONDataLoaderMixin()
-        loader.FEATURE_FILE = 'project/features/REST-API.feature'
+        loader.FEATURE_FILE = Path('project/features/REST-API.feature')
 
         with mock.patch('testharness.bdd.loader_mixins.common.open', mock_load_file):
             data = loader.load_json(expected_data_file)
 
             mock_load_file.assert_called_once_with(
-                'project/features/data/REST-API/{}'.format(expected_data_file),
+                FEATURES_DIR / 'data' / 'REST-API' / expected_data_file,
                 'rb')
             self.assertEqual(data, expected_data)
             self.assertIsInstance(data, str)
@@ -106,7 +109,7 @@ class JSONDataLoaderMixinTests(TestCase):
         mock_load_file = mock.MagicMock(side_effect=FileNotFoundError('missing data file'))
 
         loader = JSONDataLoaderMixin()
-        loader.FEATURE_FILE = 'project/features/REST-API.feature'
+        loader.FEATURE_FILE = Path('project/features/REST-API.feature')
 
         with self.assertRaises(DataFileError):
             with mock.patch('testharness.bdd.loader_mixins.common.open', mock_load_file):
@@ -128,13 +131,13 @@ class TextDataLoaderMixinTests(TestCase):
         mock_load_file = mock.mock_open(read_data=expected_data)
 
         loader = TextDataLoaderMixin()
-        loader.FEATURE_FILE = 'project/features/Texted.feature'
+        loader.FEATURE_FILE = Path('project/features/Texted.feature')
 
         with mock.patch('testharness.bdd.loader_mixins.common.open', mock_load_file):
             data = loader.load_text(expected_data_file)
 
             mock_load_file.assert_called_once_with(
-                'project/features/data/Texted/{}'.format(expected_data_file),
+                FEATURES_DIR / 'data' / 'Texted' / expected_data_file,
                 'r')
             self.assertEqual(data, expected_data)
             self.assertIsInstance(data, str)
