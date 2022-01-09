@@ -22,6 +22,8 @@ class BaseDataLoaderMixin:
     The data filename is the "Examples:" data table cell.
     """
 
+    FEATURE_FILE = ''
+
     @property
     def data_files_dir(self):
         """ Data Files Directory.
@@ -66,9 +68,11 @@ class BaseDataLoaderMixin:
 
         file_path = self.get_path(data_filename)
 
-        data = b''
-        with open(file_path, 'rb') as f:
-            data = f.read()
+        try:
+            with open(file_path, 'rb') as f:
+                data = f.read()
+        except IOError:
+            data = b''
         return data
 
 # ================================================================
@@ -92,9 +96,11 @@ class TextDataLoaderMixin(BaseDataLoaderMixin):
 
         file_path = self.get_path(data_filename)
 
-        data = ''
-        with open(file_path, 'r') as f:
-            data = f.read()
+        try:
+            with open(file_path, 'r') as f:
+                data = f.read()
+        except IOError:
+            data = b''
         return data
 
 
@@ -116,7 +122,6 @@ class JSONDataLoaderMixin(BaseDataLoaderMixin):
 
         file_path = self.get_path(data_filename)
 
-        data = {}
         try:
             with open(file_path, 'rb') as f:
                 try:

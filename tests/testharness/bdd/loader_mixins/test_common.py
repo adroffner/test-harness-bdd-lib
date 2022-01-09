@@ -14,7 +14,7 @@ from testharness.bdd.loader_mixins.common import (
 class BaseDataLoaderMixinTests(TestCase):
 
     def test_data_loader_mixin(self):
-        "Prove base BaseDataLoaderMixin attributes"
+        """Prove base BaseDataLoaderMixin attributes"""
 
         expected_data_file = 'test_data.txt'
 
@@ -26,7 +26,7 @@ class BaseDataLoaderMixinTests(TestCase):
                          'project/features/data/TC-T1/{}'.format(expected_data_file))
 
     def test_data_loader_mixin_load_data(self):
-        "Prove BaseDataLoaderMixin load_data()"
+        """Prove BaseDataLoaderMixin load_data()"""
 
         expected_data_file = 'raw_data'
 
@@ -49,7 +49,7 @@ class BaseDataLoaderMixinTests(TestCase):
 class JSONDataLoaderMixinTests(TestCase):
 
     def test_data_loader_mixin_load_json(self):
-        "Prove JSONDataLoaderMixin load_json()"
+        """Prove JSONDataLoaderMixin load_json()"""
 
         expected_data_file = 'api_data.json'
 
@@ -76,7 +76,7 @@ class JSONDataLoaderMixinTests(TestCase):
             self.assertIsInstance(data, dict)
 
     def test_data_loader_mixin_load_json_decode_error(self):
-        "Prove JSONDataLoaderMixin load_json() returns error token on decode error"
+        """Prove JSONDataLoaderMixin load_json() returns error token on decode error"""
 
         expected_data_file = 'api_data.json'
 
@@ -98,7 +98,7 @@ class JSONDataLoaderMixinTests(TestCase):
             self.assertIsInstance(data, str)
 
     def test_data_loader_mixin_load_json_os_error(self):
-        "Prove JSONDataLoaderMixin load_json() raises DataFileError on file I/O error "
+        """Prove JSONDataLoaderMixin load_json() raises DataFileError on file I/O error """
 
         expected_data_file = 'api_data.json'
 
@@ -120,7 +120,7 @@ class JSONDataLoaderMixinTests(TestCase):
 class TextDataLoaderMixinTests(TestCase):
 
     def test_data_loader_mixin_load_text(self):
-        "Prove TextDataLoaderMixin load_text()"
+        """Prove TextDataLoaderMixin load_text()"""
 
         expected_data_file = 'text_data.txt'
 
