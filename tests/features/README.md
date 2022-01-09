@@ -13,7 +13,7 @@ A **Test Analyst** must write python code to execute the _scenario_.
 Cucumber Gherkin Feature Files
 ------------------------------
 
-* (Gherkin Syntax)[https://docs.cucumber.io/gherkin/reference/]
+* [Gherkin Syntax](https://docs.cucumber.io/gherkin/reference/)
 
 These **BDD .feature** files use the _Gherkin syntax_ to outline the steps.
 The files are usually limited to only one **Scenario** or **Scenario Outline**.
