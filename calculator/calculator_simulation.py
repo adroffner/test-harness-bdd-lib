@@ -18,6 +18,8 @@ class Calculator:
         return self._is_on
 
     def click_power(self):
+        if self.is_power_on:
+            self.clear_memory()
         self._is_on = not self._is_on
 
     def clear_memory(self):
