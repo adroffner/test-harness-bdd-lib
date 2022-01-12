@@ -67,7 +67,7 @@ class CalculatorTests(unittest.TestCase):
 
     def step_I_save_number_to_the_memory(self, number):
         r"""I save "([^"]+)" to the memory"""
-        self.calculator.set_memory(number)
+        self.calculator.set_memory(float(number))
 
     def step_the_memory_value_is_zero(self):
         r"""the memory value is zero"""
