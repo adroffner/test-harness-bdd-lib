@@ -22,6 +22,10 @@ class CalculatorTests(unittest.TestCase):
         self.sum = None
         self.quotient = None
 
+    def test_buttons(self):
+        """ Addition feature """
+        verify(self.FEATURE_DIR / 'calculator_buttons.feature', self)
+
     def test_addition(self):
         """ Addition feature """
         verify(self.FEATURE_DIR / 'add_calculator.feature', self)
@@ -33,11 +37,32 @@ class CalculatorTests(unittest.TestCase):
     # Morelia automated steps
     # =======================
 
-    # Background Steps
+    # Given/Background Steps: Given the system state is known.
 
     def step_the_Calculator_is_powered_on(self):
         r"""the Calculator is powered on"""
-        self.assertTrue(self.calculator.is_power_on)
+        while not self.calculator.is_power_on:
+            self.calculator.click_power()
+
+    def step_the_Calculator_is_powered_off(self):
+        r"""the Calculator is powered off"""
+        while self.calculator.is_power_on:
+            self.calculator.click_power()
+
+    # Calculator Button Steps
+
+    def step_I_press_the_calculator_button(self):
+        r'I press the calculator button'
+        self.calculator.click_power()
+
+    def step_I_save_number_to_the_memory(self, number):
+        r"""I save "([^"]+)" to the memory"""
+        self.calculator.set_memory(number)
+
+    def step_the_memory_value_is_zero(self):
+        r"""the memory value is zero"""
+        zero = 0.0
+        self.assertEqual(self.calculator.memory, zero)
 
     # Addition Steps
 

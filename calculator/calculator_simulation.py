@@ -20,6 +20,19 @@ class Calculator:
     def click_power(self):
         self._is_on = not self._is_on
 
+    def clear_memory(self):
+        self._memory = 0.0
+
+    def set_memory(self, value):
+        if self.is_power_on:
+            self._memory = value
+        else:
+            raise CalculatorPoweredOff(f'cannot set memory to {value}')
+
+    @property
+    def memory(self):
+        return self._memory
+
     def add(self, a, b):
         if self.is_power_on:
             return a + b
