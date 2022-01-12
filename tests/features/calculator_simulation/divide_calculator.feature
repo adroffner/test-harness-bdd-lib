@@ -6,8 +6,8 @@ Feature: Dividing numbers with a Calculator
 
   Scenario Outline: Divide a positive number by another
     When I divide <numerator> by <denominator>
-    Then the answer should be <quotient>
+    Then the quotient should be <result>
 
       Examples:
-              | numerator | denominator | quotient |
-              |         1 |           1 |        1 |
+              | numerator | denominator | result |
+              |         1 |           1 |      1 |

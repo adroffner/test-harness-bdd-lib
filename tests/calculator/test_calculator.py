@@ -8,8 +8,8 @@ from calculator.calculator_simulation import Calculator
 HOME_DIR = Path(r'C:\Users\adroffner\PycharmProjects')
 
 
-class AddCalculatorTests(unittest.TestCase):
-    """ Add Calculator Gherkin Tests.
+class CalculatorTests(unittest.TestCase):
+    """ Calculator Gherkin Tests.
 
     Prove Morelia BDD library handles complex Gherkin Syntax such as multiple scenarios.
     """
@@ -20,10 +20,15 @@ class AddCalculatorTests(unittest.TestCase):
         self.calculator = Calculator()
         self.calculator.click_power()
         self.sum = None
+        self.quotient = None
 
     def test_addition(self):
         """ Addition feature """
         verify(self.FEATURE_DIR / 'add_calculator.feature', self)
+
+    def test_division(self):
+        """ Division feature """
+        verify(self.FEATURE_DIR / 'divide_calculator.feature', self)
 
     # Morelia automated steps
     # =======================
@@ -47,6 +52,20 @@ class AddCalculatorTests(unittest.TestCase):
         r"""the sum should be "([^"]+)\""""
         expected_sum = float(number)
         self.assertEqual(self.sum, expected_sum)
+
+    # Division Steps
+
+    def step_I_divide_numerator_by_denominator(self, numerator, denominator):
+        r"""I divide (.+) by (.+)"""
+        a = float(numerator)
+        b = float(denominator)
+        self.quotient = a / b
+        self.assertEqual(self.quotient, self.calculator.divide(a, b))
+
+    def step_the_quotient_should_be_result(self, result):
+        r"""the quotient should be (.+)"""
+        expected_quotient = float(result)
+        self.assertEqual(self.quotient, expected_quotient)
 
 
 if __name__ == '__main__':

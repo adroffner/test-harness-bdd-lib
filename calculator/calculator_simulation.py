@@ -25,3 +25,9 @@ class Calculator:
             return a + b
         else:
             raise CalculatorPoweredOff(f'cannot add {a} + {b}')
+
+    def divide(self, a, b):
+        if self.is_power_on:
+            return a / b
+        else:
+            raise CalculatorPoweredOff(f'cannot divide {a} / {b}')
