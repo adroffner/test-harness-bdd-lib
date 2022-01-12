@@ -11,3 +11,4 @@ Feature: Dividing numbers with a Calculator
       Examples:
               | numerator | denominator | result |
               |         1 |           1 |      1 |
+              |         5 |           2 |    2.5 |
