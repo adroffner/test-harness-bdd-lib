@@ -14,5 +14,6 @@ Feature: Dividing numbers with a Calculator
               |         5 |           2 |    2.5 |
 
   Scenario: Division by zero raises an error
+    Given the Calculator is not in the error state
     When I try to divide by zero
     Then the calculator goes to the value error state

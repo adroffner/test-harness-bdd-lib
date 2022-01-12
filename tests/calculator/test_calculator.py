@@ -49,6 +49,10 @@ class CalculatorTests(unittest.TestCase):
         while self.calculator.is_power_on:
             self.calculator.click_power()
 
+    def step_the_Calculator_is_not_in_the_error_state(self):
+        r'the Calculator is not in the error state'
+        self.calculator.clear_error()
+
     # Error State Steps
 
     def step_the_calculator_goes_to_the_value_error_state(self):
