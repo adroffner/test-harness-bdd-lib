@@ -26,10 +26,15 @@ class AddCalculatorTests(unittest.TestCase):
         verify(self.FEATURE_DIR / 'add_calculator.feature', self)
 
     # Morelia automated steps
+    # =======================
+
+    # Background Steps
 
     def step_the_Calculator_is_powered_on(self):
         r"""the Calculator is powered on"""
         self.assertTrue(self.calculator.is_power_on)
+
+    # Addition Steps
 
     def step_I_add_number_and_number(self, number1, number2):
         r"""I add "([^"]+)" and "([^"]+)\""""
