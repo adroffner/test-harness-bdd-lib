@@ -49,6 +49,12 @@ class CalculatorTests(unittest.TestCase):
         while self.calculator.is_power_on:
             self.calculator.click_power()
 
+    # Error State Steps
+
+    def step_the_calculator_goes_to_the_value_error_state(self):
+        r'the calculator goes to the value error state'
+        self.assertTrue(self.calculator.error_state)
+
     # Calculator Button Steps
 
     def step_I_press_the_calculator_button(self):
@@ -91,6 +97,10 @@ class CalculatorTests(unittest.TestCase):
         r"""the quotient should be (.+)"""
         expected_quotient = float(result)
         self.assertEqual(self.quotient, expected_quotient)
+
+    def step_I_try_to_divide_by_zero(self):
+        r'I try to divide by zero'
+        self.calculator.divide(5.0, 0)
 
 
 if __name__ == '__main__':

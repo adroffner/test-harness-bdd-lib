@@ -12,3 +12,7 @@ Feature: Dividing numbers with a Calculator
               | numerator | denominator | result |
               |         1 |           1 |      1 |
               |         5 |           2 |    2.5 |
+
+  Scenario: Division by zero raises an error
+    When I try to divide by zero
+    Then the calculator goes to the value error state

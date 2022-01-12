@@ -12,6 +12,7 @@ class Calculator:
     def __init__(self):
         self._is_on = False
         self._memory = 0.0
+        self._error_state = False
 
     @property
     def is_power_on(self):
@@ -35,6 +36,13 @@ class Calculator:
     def memory(self):
         return self._memory
 
+    def clear_error(self):
+        self._error_state = False
+
+    @property
+    def error_state(self):
+        return self._error_state
+
     def add(self, a, b):
         if self.is_power_on:
             return a + b
@@ -43,6 +51,9 @@ class Calculator:
 
     def divide(self, a, b):
         if self.is_power_on:
-            return a / b
+            try:
+                return a / b
+            except (ValueError, ZeroDivisionError):
+                self._error_state = True
         else:
             raise CalculatorPoweredOff(f'cannot divide {a} / {b}')
