@@ -61,8 +61,12 @@ class CalculatorTests(unittest.TestCase):
 
     # Calculator Button Steps
 
-    def step_I_press_the_calculator_button(self):
-        r'I press the calculator button'
+    def step_I_press_the_calculator_clear_memory_button(self):
+        r'I press the calculator clear memory button'
+        self.calculator.clear_memory()
+
+    def step_I_press_the_calculator_power_button(self):
+        r'I press the calculator power button'
         self.calculator.click_power()
 
     def step_I_save_number_to_the_memory(self, number):
